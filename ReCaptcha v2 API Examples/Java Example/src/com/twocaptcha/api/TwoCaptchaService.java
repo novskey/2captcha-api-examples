@@ -1,8 +1,11 @@
 package com.twocaptcha.api;
 
-import java.io.IOException;
-
 import com.twocaptcha.http.HttpWrapper;
+import org.apache.logging.log4j.Level;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
+
+import java.io.IOException;
 
 public class TwoCaptchaService {
 	
@@ -18,8 +21,12 @@ public class TwoCaptchaService {
 	 * via eMail: chillivanilli@chillibots.com
 	 * via skype: ktlotzek
 	 */
+
+	static final Logger logger = LogManager.getLogger();
 	
-	
+
+	private boolean debug;
+
 	/**
 	 * Your 2captcha.com captcha KEY
 	 */
@@ -128,7 +135,7 @@ public class TwoCaptchaService {
 	 * @throws IOException, when there is any server issue and the request cannot be completed
 	 */
 	public String solveCaptcha() throws InterruptedException, IOException {
-		System.out.println("Sending recaptcha challenge to 2captcha.com");
+		logger.info("Sending recaptcha challenge to 2captcha.com");
 		
 		String parameters = "key=" + apiKey
 				+ "&method=userrecaptcha"
@@ -161,10 +168,10 @@ public class TwoCaptchaService {
 			Thread.sleep(1000);
 			
 			timeCounter++;
-			System.out.println("Waiting for captcha to be solved");
+			logger.debug("Waiting for captcha to be solved");
 		} while(hw.getHtml().contains("NOT_READY"));
 		
-		System.out.println("It took "  + timeCounter + " seconds to solve the captcha");
+		logger.info("It took "  + timeCounter + " seconds to solve the captcha");
 		String gRecaptchaResponse = hw.getHtml().replaceAll("OK\\|", "").replaceAll("\\n", "");
 		return gRecaptchaResponse;
 	}
@@ -296,4 +303,5 @@ public class TwoCaptchaService {
 	public void setProxyType(ProxyType proxyType) {
 		this.proxyType = proxyType;
 	}
+
 }
